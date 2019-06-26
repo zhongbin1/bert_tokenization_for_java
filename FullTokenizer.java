@@ -20,8 +20,7 @@ public class FullTokenizer {
 
     public List<String> tokenize(String text){
         List<String> splitTopkens = new ArrayList<String>();
-        //System.out.println("basic " + basicTokenizer.tokenize(text));
-        //System.out.println("wordpiece " + wordpieceTokenizer.tokenize(text));
+
         for(String token : basicTokenizer.tokenize(text)){
             for(String subToken : wordpieceTokenizer.tokenize(token)){
                 splitTopkens.add(subToken);

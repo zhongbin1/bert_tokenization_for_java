@@ -10,7 +10,7 @@ public class Preprocess {
     private final static int maxSeqLength = 64;  // 放到配置文件中去读
 
     public Preprocess(){
-        this.vocab = load("/Users/zb/code/pretrain_models/chinese_L-12_H-768_A-12/vocab.txt");
+        this.vocab = load("./vocab.txt");
         this.fullTokenizer = new FullTokenizer(this.vocab);
     }
 
@@ -105,16 +105,13 @@ public class Preprocess {
 
     public List<Example> preProcess(String query, List<String> docs){
         String cleanQuery = full2HalfChange(query).toLowerCase();  //全角转半角+大写转小写
-        //System.out.println(cleanQuery);
+
         List<String> tokensQuery = this.fullTokenizer.tokenize(cleanQuery);
-        //System.out.println(tokensQuery);
 
         List<Example> examples = new ArrayList<Example>();
         for(String doc : docs){
             String cleanDoc = full2HalfChange(doc).toLowerCase();
-            //System.out.println(cleanDoc);
             List<String> tokensDoc = this.fullTokenizer.tokenize(cleanDoc);
-            //System.out.println(tokensDoc);
             Example e = getExample(tokensQuery, tokensDoc);
             examples.add(e);
         }

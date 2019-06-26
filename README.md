@@ -1,1 +1,16 @@
-# bert_tokenization_for_java
+This is a java version of Chinese tokenization descried in BERT, including basic tokenization and wordpiece tokenization.
+
+## Motivation
+
+In production, we usually deploy the BERT related model by tensorflow serving for high performance and flexibility. However, our application may not developed by python. Hence, we have to rewrite the tokenization module.
+
+## Usage
+
+Just run `Preprocess.java`, you can get result.
+
+Moreover, for Chinese natural language processing, we add **full turn to half angle** and **uppercase to lowercase** operation.
+
+## Reporting issues
+
+Please let me know, if you encounter any problems.
+
