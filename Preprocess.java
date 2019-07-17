@@ -10,7 +10,7 @@ public class Preprocess {
     private final static int maxSeqLength = 64;  // 放到配置文件中去读
 
     public Preprocess(){
-        this.vocab = load("./vocab.txt");
+        this.vocab = load("/Users/zb/code/my_github/bert_tokenization_for_java/vocab.txt");
         this.fullTokenizer = new FullTokenizer(this.vocab);
     }
 
@@ -45,11 +45,18 @@ public class Preprocess {
         docs.add(doc);
 
         List<Example> examples = pp.preProcess(query, docs);
-        System.out.println(examples);
 
         System.out.println("input_ids " + examples.get(0).getInputIds());
         System.out.println("input_mask " + examples.get(0).getInputMask());
         System.out.println("segment_ids " + examples.get(0).getSegmentIds());
+
+        query = pp.full2HalfChange(query).toLowerCase();
+        List<String> tokensQuery = pp.fullTokenizer.tokenize(query);
+
+        Example e = pp.getExampleSingle(tokensQuery);
+        System.out.println("input_ids " + e.getInputIds());
+        System.out.println("input_mask " + e.getInputMask());
+        System.out.println("segment_ids " + e.getSegmentIds());
 
     }
 
@@ -112,13 +119,14 @@ public class Preprocess {
         for(String doc : docs){
             String cleanDoc = full2HalfChange(doc).toLowerCase();
             List<String> tokensDoc = this.fullTokenizer.tokenize(cleanDoc);
-            Example e = getExample(tokensQuery, tokensDoc);
+            Example e = getExamplePair(tokensQuery, tokensDoc);
             examples.add(e);
         }
         return examples;
     }
 
-    private Example getExample(List<String> tokensQuery, List<String> tokensDoc){
+    // 句对映射id
+    private Example getExamplePair(List<String> tokensQuery, List<String> tokensDoc){
         while(true){
             int totalLength = tokensQuery.size() + tokensDoc.size();
             if(totalLength <= maxSeqLength - 3){
@@ -148,6 +156,48 @@ public class Preprocess {
         }
         tokens.add("[SEP]");
         segmentIds.add(1);
+
+        List<Integer> inputIds = this.fullTokenizer.convertTokensToIds(tokens);
+        List<Integer> inputMask = new ArrayList<Integer>();
+
+        for(int i=0; i<inputIds.size(); i++){
+            inputMask.add(1);
+        }
+
+        while(inputIds.size() < maxSeqLength){
+            inputIds.add(0);
+            inputMask.add(0);
+            segmentIds.add(0);
+        }
+
+        return new Example(inputIds, inputMask, segmentIds);
+
+    }
+
+    // 单句映射id
+    private Example getExampleSingle(List<String> tokensQuery){
+        while(true){
+            int totalLength = tokensQuery.size();
+            if(totalLength <= maxSeqLength - 2){
+                break;
+            }
+            else {
+                tokensQuery.remove(tokensQuery.size() - 1);
+            }
+
+        }
+
+        List<String> tokens = new ArrayList<String>();
+        List<Integer> segmentIds = new ArrayList<Integer>();
+        tokens.add("[CLS]");
+        segmentIds.add(0);
+        for(String token : tokensQuery){
+            tokens.add(token);
+            segmentIds.add(0);
+        }
+        tokens.add("[SEP]");
+        segmentIds.add(0);
+
 
         List<Integer> inputIds = this.fullTokenizer.convertTokensToIds(tokens);
         List<Integer> inputMask = new ArrayList<Integer>();
