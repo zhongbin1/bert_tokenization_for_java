@@ -28,7 +28,7 @@ public class WordpieceTokenizer {
         for(String token : tokens){
             int length = token.length();
             if(length > this.maxInputCharsPerWord){
-                outputTokens.add(token);
+                outputTokens.add(this.unkToken);
                 continue;
             }
 
