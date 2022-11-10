@@ -6,7 +6,7 @@ In production, we usually deploy the BERT related model by tensorflow serving fo
 
 ## Usage
 
-Just run `Preprocess.java`, you can get result. Now, it support single and pair sentence both.
+Just run `Demo.java`, you can get result. Now, it support single and pair sentence both.
 
 Moreover, for Chinese natural language processing, we add **full turn to half angle** and **uppercase to lowercase** operation.
 
