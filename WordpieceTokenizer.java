@@ -11,7 +11,7 @@ public class WordpieceTokenizer {
     private String unkToken = "[UNK]";
     private int maxInputCharsPerWord = 200;
 
-    public WordpieceTokenizer(Map<String, Integer> vocab){
+    public WordpieceTokenizer(Map<String, Integer> vocab) {
         this.vocab = vocab;
     }
 
@@ -20,14 +20,14 @@ public class WordpieceTokenizer {
         input = "unaffable"
         output = ["un", "##aff", "##able"]
     */
-    public List<String> tokenize(String text){
+    public List<String> tokenize(String text) {
 
         List<String> tokens = whiteSpaceTokenize(text);
 
         List<String> outputTokens = new ArrayList<String>();
-        for(String token : tokens){
+        for (String token : tokens) {
             int length = token.length();
-            if(length > this.maxInputCharsPerWord){
+            if (length > this.maxInputCharsPerWord) {
                 outputTokens.add(this.unkToken);
                 continue;
             }
@@ -36,21 +36,21 @@ public class WordpieceTokenizer {
             int start = 0;
             List<String> subTokens = new ArrayList<String>();
 
-            while(start < length){
+            while (start < length) {
                 int end = length;
                 String curSubStr = null;
-                while(start < end){
+                while (start < end) {
                     String subStr = token.substring(start, end);
-                    if(start > 0){
+                    if (start > 0) {
                         subStr = "##" + subStr;
                     }
-                    if(this.vocab.containsKey(subStr)){
+                    if (this.vocab.containsKey(subStr)) {
                         curSubStr = subStr;
                         break;
                     }
                     end -= 1;
                 }
-                if(null == curSubStr){
+                if (null == curSubStr) {
                     isBad = true;
                     break;
                 }
@@ -58,9 +58,9 @@ public class WordpieceTokenizer {
                 start = end;
             }
 
-            if(isBad){
+            if (isBad) {
                 outputTokens.add(this.unkToken);
-            }else{
+            } else {
                 outputTokens.addAll(subTokens);
             }
 
@@ -68,11 +68,11 @@ public class WordpieceTokenizer {
         return outputTokens;
     }
 
-    private List<String> whiteSpaceTokenize(String text){
+    private List<String> whiteSpaceTokenize(String text) {
         List<String> result = new ArrayList<String>();
 
         text = text.trim();
-        if(null == text){
+        if (null == text) {
             return result;
         }
         String[] tokens = text.split(" ");
